@@ -21,11 +21,11 @@ pipeline {
             }
         }
 
-        stage('Security Scan') {
-            steps {
-                sh 'grep -r "password" . || true'
-            }
-        }
+        stage('AI Security Scan') {
+    steps {
+        sh 'python3 security_scan.py'
+    }
+}
 
         stage('Deploy') {
             steps {
