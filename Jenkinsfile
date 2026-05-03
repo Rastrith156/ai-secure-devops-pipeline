@@ -49,9 +49,9 @@ pipeline {
             steps {
                 sh '''
                 echo "Scanning Docker image with Trivy..."
-                trivy image ai-secure-app
+                trivy image --skip-db-update ai-secure-app
                 '''
-            }
+           }
         }
 
         stage('Deploy') {
