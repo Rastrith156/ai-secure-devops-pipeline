@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone') {
-            steps {
-                git credentialsId: 'github-token',
-                    url: 'https://github.com/Rastrith156/ai-secure-devops-pipeline.git'
-            }
-        }
 
         stage('Install') {
             steps {
