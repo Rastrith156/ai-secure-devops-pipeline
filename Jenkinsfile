@@ -3,6 +3,20 @@ pipeline {
 
     stages {
 
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ai-secure-app .'
+            }
+       }
+
+    stage('Vulnerability Scan (Trivy)') {
+        steps {
+            sh '''
+            echo "Scanning Docker image with Trivy..."
+            trivy image ai-secure-app
+            '''
+           }
+       }
         stage('Install') {
             steps {
                 sh '''
