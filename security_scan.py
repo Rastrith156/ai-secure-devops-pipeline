@@ -1,11 +1,10 @@
 import os
-import re
 import sys
 
-# 🚫 Exclude unnecessary directories
+# 🚫 Exclude directories AND this file itself
 EXCLUDE_DIRS = ["venv", "__pycache__", ".git"]
+EXCLUDE_FILES = ["security_scan.py"]
 
-# 🔍 Improved keywords (avoid false positives)
 KEYWORDS = [
     "api_key=",
     "token=",
@@ -14,12 +13,12 @@ KEYWORDS = [
     "auth="
 ]
 
-# ⚠️ Risk threshold (>=5 will fail pipeline)
-RISK_THRESHOLD = 5
-
-
-def should_scan(path):
-    return not any(excluded in path for excluded in EXCLUDE_DIRS)
+def should_scan(filepath):
+    if any(excluded in filepath for excluded in EXCLUDE_DIRS):
+        return False
+    if any(file in filepath for file in EXCLUDE_FILES):
+        return False
+    return True
 
 
 def calculate_risk(line):
@@ -47,26 +46,26 @@ def main():
     total_issues = 0
 
     for root, dirs, files in os.walk("."):
-        # 🚫 Remove excluded dirs
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
 
         for file in files:
-            if file.endswith(".py"):
-                filepath = os.path.join(root, file)
+            if not file.endswith(".py"):
+                continue
 
-                if not should_scan(filepath):
-                    continue
+            filepath = os.path.join(root, file)
 
-                issues = scan_file(filepath)
+            if not should_scan(filepath):
+                continue
 
-                if issues:
-                    print(f"\n❌ {filepath}")
-                    for line_no, content, risk in issues:
-                        print(f"   Line {line_no}: {content} (risk={risk})")
-                        total_issues += 1
+            issues = scan_file(filepath)
 
-    # 🎯 Final result
-    if total_issues >= 1:
+            if issues:
+                print(f"\n❌ {filepath}")
+                for line_no, content, risk in issues:
+                    print(f"   Line {line_no}: {content} (risk={risk})")
+                    total_issues += 1
+
+    if total_issues > 0:
         print("\n❌ Security issues detected!")
         sys.exit(1)
     else:
