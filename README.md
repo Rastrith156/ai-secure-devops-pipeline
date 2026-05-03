@@ -1,5 +1,5 @@
 # AI-Secure DevOps Pipeline
-=======
+
 ![CI/CD](https://img.shields.io/badge/CI-CD-Jenkins-blue)
 ![Docker](https://img.shields.io/badge/Container-Docker-2496ED)
 ![Security](https://img.shields.io/badge/Security-Trivy-green)
