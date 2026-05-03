@@ -1,13 +1,10 @@
 # AI-Secure DevOps Pipeline
-
-<<<<<<< HEAD)
 =======
 ![CI/CD](https://img.shields.io/badge/CI-CD-Jenkins-blue)
 ![Docker](https://img.shields.io/badge/Container-Docker-2496ED)
 ![Security](https://img.shields.io/badge/Security-Trivy-green)
 ![Python](https://img.shields.io/badge/Language-Python-yellow)
 ![Status](https://img.shields.io/badge/Build-Passing-success)
->>>>>>> 9cf31bf (removed broken badge links)
 
 ---
 
