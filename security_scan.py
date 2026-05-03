@@ -1,44 +1,77 @@
 import os
+import re
+import sys
 
-suspicious_keywords = [
-    "password", "secret", "api_key", "token", "auth", "credential"
+# 🚫 Exclude unnecessary directories
+EXCLUDE_DIRS = ["venv", "__pycache__", ".git"]
+
+# 🔍 Improved keywords (avoid false positives)
+KEYWORDS = [
+    "api_key=",
+    "token=",
+    "secret=",
+    "password=",
+    "auth="
 ]
 
-def analyze_line(line):
-    score = 0
-    for word in suspicious_keywords:
-        if word.lower() in line.lower():
-            score += 1
-    if "=" in line and "\"" in line:
-        score += 1
-    return score
+# ⚠️ Risk threshold (>=5 will fail pipeline)
+RISK_THRESHOLD = 5
 
-def scan_file(file_path):
+
+def should_scan(path):
+    return not any(excluded in path for excluded in EXCLUDE_DIRS)
+
+
+def calculate_risk(line):
+    risk = 0
+    for keyword in KEYWORDS:
+        if keyword in line.lower():
+            risk += 5
+    return risk
+
+
+def scan_file(filepath):
     issues = []
-    with open(file_path, "r", errors="ignore") as f:
-        for i, line in enumerate(f.readlines(), start=1):
-            score = analyze_line(line)
-            if score >= 2:
-                issues.append((i, line.strip(), score))
+    try:
+        with open(filepath, "r", errors="ignore") as f:
+            for i, line in enumerate(f, start=1):
+                risk = calculate_risk(line)
+                if risk > 0:
+                    issues.append((i, line.strip(), risk))
+    except Exception:
+        pass
     return issues
 
-def scan_directory(path="."):
-    found = False
-    for root, _, files in os.walk(path):
+
+def main():
+    total_issues = 0
+
+    for root, dirs, files in os.walk("."):
+        # 🚫 Remove excluded dirs
+        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
+
         for file in files:
             if file.endswith(".py"):
-                full_path = os.path.join(root, file)
-                issues = scan_file(full_path)
+                filepath = os.path.join(root, file)
+
+                if not should_scan(filepath):
+                    continue
+
+                issues = scan_file(filepath)
+
                 if issues:
-                    print(f"\n❌ {full_path}")
-                    for line_no, text, score in issues:
-                        print(f"   Line {line_no}: {text} (risk={score})")
-                    found = True
-    return found
+                    print(f"\n❌ {filepath}")
+                    for line_no, content, risk in issues:
+                        print(f"   Line {line_no}: {content} (risk={risk})")
+                        total_issues += 1
+
+    # 🎯 Final result
+    if total_issues >= 1:
+        print("\n❌ Security issues detected!")
+        sys.exit(1)
+    else:
+        print("\n✅ No critical security issues found!")
+
 
 if __name__ == "__main__":
-    if scan_directory():
-        print("\n AI Security Risk Detected. Blocking build.")
-        exit(1)
-    else:
-        print("\n Code looks safe.")
+    main()
