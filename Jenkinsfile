@@ -3,29 +3,14 @@ pipeline {
 
     stages {
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t ai-secure-app .'
-            }
-       }
-
-    stage('Vulnerability Scan (Trivy)') {
-        steps {
-            sh '''
-            echo "Scanning Docker image with Trivy..."
-            trivy image ai-secure-app
-            '''
-           }
-       }
         stage('Install') {
             steps {
                 sh '''
                 echo "Creating virtual environment..."
                 python3 -m venv venv
 
-                echo "Activating venv and installing dependencies..."
+                echo "Installing dependencies..."
                 . venv/bin/activate
-                pip install --upgrade pip
                 pip install -r requirements.txt || true
                 '''
             }
@@ -44,9 +29,27 @@ pipeline {
         stage('AI Security Scan') {
             steps {
                 sh '''
-                echo "Running AI security scan..."
+                echo "Running security scan..."
                 . venv/bin/activate
                 python3 security_scan.py
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                echo "Building Docker image..."
+                docker build -t ai-secure-app .
+                '''
+            }
+        }
+
+        stage('Vulnerability Scan (Trivy)') {
+            steps {
+                sh '''
+                echo "Scanning Docker image with Trivy..."
+                trivy image --skip-db-update ai-secure-app
                 '''
             }
         }
