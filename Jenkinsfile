@@ -49,7 +49,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Scanning Docker image with Trivy..."
-                trivy image --skip-db-update ai-secure-app
+                trivy image ai-secure-app
                 '''
             }
         }
