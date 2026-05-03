@@ -1,10 +1,13 @@
 # AI-Secure DevOps Pipeline
 
-[![CI/CD](https://img.shields.io/badge/CI-CD-Jenkins-blue)](https://www.jenkins.io/)
-[![Docker](https://img.shields.io/badge/Container-Docker-2496ED)](https://www.docker.com/)
-[![Security](https://img.shields.io/badge/Security-Trivy-green)](https://github.com/aquasecurity/trivy)
-[![Python](https://img.shields.io/badge/Language-Python-yellow)](https://www.python.org/)
-[![Status](https://img.shields.io/badge/Build-Passing-success)]()
+<<<<<<< HEAD)
+=======
+![CI/CD](https://img.shields.io/badge/CI-CD-Jenkins-blue)
+![Docker](https://img.shields.io/badge/Container-Docker-2496ED)
+![Security](https://img.shields.io/badge/Security-Trivy-green)
+![Python](https://img.shields.io/badge/Language-Python-yellow)
+![Status](https://img.shields.io/badge/Build-Passing-success)
+>>>>>>> 9cf31bf (removed broken badge links)
 
 ---
 
