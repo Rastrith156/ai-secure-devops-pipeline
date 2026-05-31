@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11.9-slim
 
 # Unprivileged runtime user — never run containers as root
 RUN adduser --disabled-password --gecos "" appuser

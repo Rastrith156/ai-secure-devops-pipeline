@@ -32,6 +32,8 @@ TARGET_EXTENSIONS: frozenset[str] = frozenset({
     ".cfg", ".ini", ".txt", ".sh", ".toml",
 })
 
+RISK_THRESHOLD: int = 8
+
 
 # ── Pattern definitions ─────────────────────────────────────────────
 
@@ -109,7 +111,7 @@ def scan_file(filepath: str) -> list[Finding]:
                 if not stripped or stripped.startswith("#"):
                     continue
                 score, labels = _score_line(stripped)
-                if score > 0:
+                if score >= RISK_THRESHOLD:
                     findings.append(
                         Finding(lineno, stripped, score, labels)
                     )

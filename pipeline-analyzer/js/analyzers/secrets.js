@@ -78,18 +78,23 @@ export function analyzeSecrets(files) {
 
 function scanKnownPatterns(file) {
   const issues = [];
+  const seen = new Set();
 
   SECRET_PATTERNS.forEach((pattern) => {
     pattern.regex.lastIndex = 0;
     const matches = [...file.content.matchAll(pattern.regex)];
     matches.forEach((match) => {
       if (isLikelyPlaceholder(match[0])) return;
+      const lineNo = lineForIndex(file.content, match.index);
+      const key = `${file.filename}:${lineNo}`;
+      if (seen.has(key)) return;
+      seen.add(key);
       issues.push(
         makeIssue(
           SECURITY_STAGE,
           pattern.sev,
           pattern.title,
-          `${file.filename}:${lineForIndex(file.content, match.index)}`,
+          `${file.filename}:${lineNo}`,
           "A credential-like value is committed in source control. Treat it as exposed.",
           pattern.fix
         )

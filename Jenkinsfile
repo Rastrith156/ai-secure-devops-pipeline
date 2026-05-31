@@ -21,7 +21,7 @@ pipeline {
                 echo "Installing dependencies..."
                 . venv/bin/activate
                 pip install --upgrade pip
-                pip install -r requirements.txt
+                pip install -r requirements.txt -r requirements-dev.txt
                 '''
             }
         }
@@ -31,8 +31,14 @@ pipeline {
                 sh '''
                 echo "Running tests..."
                 . venv/bin/activate
-                python3 -m pytest tests/ -v --tb=short
+                mkdir -p test-results
+                python3 -m pytest tests/ -v --tb=short --junitxml=test-results/results.xml
                 '''
+            }
+            post {
+                always {
+                    junit 'test-results/*.xml'
+                }
             }
         }
 

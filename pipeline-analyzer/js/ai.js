@@ -25,12 +25,12 @@ export async function analyzeWithClaude({ apiKey, model, files, project, signal,
 
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
-  const abortSignal = signal || controller.signal;
+  const effectiveSignal = signal ? combineSignals(signal, controller.signal) : controller.signal;
 
   try {
     const response = await fetch(ANTHROPIC_URL, {
       method: "POST",
-      signal: abortSignal,
+      signal: effectiveSignal,
       headers: {
         "content-type": "application/json",
         "x-api-key": apiKey,
@@ -67,6 +67,22 @@ export async function analyzeWithClaude({ apiKey, model, files, project, signal,
   } finally {
     window.clearTimeout(timeout);
   }
+}
+
+function combineSignals(...signals) {
+  const liveSignals = signals.filter(Boolean);
+  if (liveSignals.length === 1) return liveSignals[0];
+  if (AbortSignal.any) return AbortSignal.any(liveSignals);
+
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+
+  liveSignals.forEach((signal) => {
+    if (signal.aborted) abort();
+    else signal.addEventListener("abort", abort, { once: true });
+  });
+
+  return controller.signal;
 }
 
 function buildPrompt(files, project) {
