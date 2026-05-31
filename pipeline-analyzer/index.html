@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Secure DevOps Pipeline Analyzer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script type="module" src="js/pipeline.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <i data-lucide="shield-check"></i>
+          </span>
+          <div>
+            <h1>Pipeline Analyzer</h1>
+            <p>Student ZIP to DevSecOps fix report</p>
+          </div>
+        </div>
+        <div class="score-pill" id="scorePill" hidden>
+          <span id="scoreValue">100</span>
+          <small id="scoreLabel">Excellent</small>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="upload-panel" aria-labelledby="uploadTitle">
+          <div class="section-heading">
+            <div>
+              <h2 id="uploadTitle">Project Intake</h2>
+              <p id="statusText">Ready for a ZIP scan.</p>
+            </div>
+            <button class="icon-button" id="clearBtn" type="button" title="Clear results" aria-label="Clear results" disabled>
+              <i data-lucide="rotate-ccw"></i>
+            </button>
+          </div>
+
+          <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload a ZIP project">
+            <input id="zipInput" type="file" accept=".zip,application/zip" hidden>
+            <div class="drop-copy">
+              <span class="drop-icon" aria-hidden="true"><i data-lucide="upload-cloud"></i></span>
+              <div>
+                <strong>Drop project ZIP</strong>
+                <span>or choose a file from this machine</span>
+              </div>
+            </div>
+            <button class="primary-button" id="browseBtn" type="button">
+              <i data-lucide="folder-open"></i>
+              Browse ZIP
+            </button>
+          </div>
+
+          <div class="progress-wrap" aria-hidden="true">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <div class="scan-controls">
+            <label class="field">
+              <span>Anthropic API key</span>
+              <input id="apiKeyInput" type="password" autocomplete="off" spellcheck="false" placeholder="optional">
+            </label>
+            <label class="field model-field">
+              <span>Model</span>
+              <input id="modelInput" type="text" value="claude-sonnet-4-5" spellcheck="false">
+            </label>
+            <button class="secondary-button" id="demoBtn" type="button">
+              <i data-lucide="sparkles"></i>
+              Demo
+            </button>
+            <button class="primary-button" id="analyzeBtn" type="button" disabled>
+              <i data-lucide="play"></i>
+              Analyze
+            </button>
+          </div>
+        </section>
+
+        <section class="summary-grid" aria-label="Scan summary">
+          <article class="metric">
+            <span class="metric-icon type" aria-hidden="true"><i data-lucide="boxes"></i></span>
+            <div>
+              <strong id="projectType">No project</strong>
+              <span id="projectSignals">Upload a ZIP to detect stack</span>
+            </div>
+          </article>
+          <article class="metric">
+            <span class="metric-icon files" aria-hidden="true"><i data-lucide="files"></i></span>
+            <div>
+              <strong id="fileMetric">0 files</strong>
+              <span id="skipMetric">0 skipped</span>
+            </div>
+          </article>
+          <article class="metric">
+            <span class="metric-icon issues" aria-hidden="true"><i data-lucide="alert-triangle"></i></span>
+            <div>
+              <strong id="issueMetric">0 issues</strong>
+              <span id="severityMetric">No scan yet</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <aside class="panel file-panel" aria-labelledby="filesTitle">
+            <div class="panel-title">
+              <h2 id="filesTitle">Detected Files</h2>
+              <span id="fileCountBadge">0</span>
+            </div>
+            <div class="file-list" id="fileList" aria-live="polite">
+              <p class="empty-state">No ZIP loaded.</p>
+            </div>
+          </aside>
+
+          <section class="panel pipeline-panel" aria-labelledby="pipelineTitle">
+            <div class="panel-title">
+              <h2 id="pipelineTitle">Pipeline Stages</h2>
+              <span id="runtimeBadge">Idle</span>
+            </div>
+            <div class="stage-grid" id="stageGrid"></div>
+          </section>
+        </section>
+
+        <section class="report-panel" id="reportPanel" aria-labelledby="reportTitle">
+          <div class="panel-title">
+            <h2 id="reportTitle">Fix Report</h2>
+            <div class="report-actions">
+              <button class="secondary-button" id="copyReportBtn" type="button" disabled>
+                <i data-lucide="clipboard-copy"></i>
+                Copy Report
+              </button>
+              <button class="secondary-button" id="printBtn" type="button" disabled>
+                <i data-lucide="printer"></i>
+                Print
+              </button>
+            </div>
+          </div>
+          <div id="reportBody">
+            <p class="empty-state">The final report appears after analysis.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+venv/
+.git/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+tests/
+security_scan.py
+Jenkinsfile
+README.md
+*.zip
