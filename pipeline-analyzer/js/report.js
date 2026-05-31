@@ -103,7 +103,7 @@ export function getScoreLabel(score) {
   if (score >= 90) return "Excellent";
   if (score >= 70) return "Good";
   if (score >= 50) return "Needs work";
-  return "Critical issues";
+  return "Urgent fixes needed";
 }
 
 function getScoreColor(score) {
